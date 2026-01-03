@@ -190,7 +190,7 @@ You are tasked with improving a marketing message based on evaluation feedback.
 [previous_message_key]
 
 **EVALUATION FEEDBACK:**
-{message_evaluation}
+[message_evaluation]
 
 **YOUR TASK:**
 Based on the evaluation feedback, revise the message to address ALL failed criteria.
@@ -206,6 +206,11 @@ Maintain what worked well in the previous version while fixing the identified is
 def get_enhanced_message_generator_config(message_type: str) -> tuple[str, str]:
     description = f"Improves {message_type} marketing message based on evaluation feedback"
     previous_message_key = f"{message_type}_message"
-    instruction = enhanced_message_instruction_template.replace("[previous_message_key]", previous_message_key)
-    instruction = instruction.replace("[message_type]", message_type)
+    eval_key = f"{message_type}_evaluation"
+    instruction = (
+            enhanced_message_instruction_template
+            .replace("[previous_message_key]", previous_message_key)
+            .replace("[message_type]", message_type)
+            .replace("[message_evaluation]", eval_key)
+        )
     return description, instruction

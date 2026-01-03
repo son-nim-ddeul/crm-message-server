@@ -57,7 +57,9 @@ def set_state(callback_context: CallbackContext) -> Optional[types.Content]:
     callback_context.state["persona"] = persona
     return None
    
-
+# TODO : Sequential Agent 로 수정
+# TODO 1. 메시지 발송 목적 기반 페르소나 선정 에이전트 추가
+# TODO 2. 주요 메시지 성과, 예상 발송일 기반 RAG 조회 에이전트 추가
 root_agent = LlmAgent(
     name="message_generator",
     model=config.worker_model,

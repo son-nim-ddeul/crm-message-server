@@ -1,6 +1,8 @@
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from google.adk.models.google_llm import Gemini
+from google.genai import types
 
 from dotenv import load_dotenv
 
@@ -25,9 +27,21 @@ class ResearchConfiguration:
     """
 
     # gemini-3-pro-preview
-    writer_model: str = "gemini-2.5-flash"
-    critic_model: str = "gemini-2.5-flash"
-    worker_model: str = "gemini-2.5-flash"
+    # writer_model: str = "gemini-2.5-flash"
+    # critic_model: str = "gemini-2.5-flash"
+    # worker_model: str = "gemini-2.5-flash"
+    writer_model = Gemini(
+        model="gemini-2.5-flash",
+        retry_options=types.HttpRetryOptions(initial_delay=10, attempts=10)
+    )
+    critic_model = Gemini(
+        model="gemini-2.5-flash",
+        retry_options=types.HttpRetryOptions(initial_delay=10, attempts=10)
+    )
+    worker_model= Gemini(
+        model="gemini-2.5-flash",
+        retry_options=types.HttpRetryOptions(initial_delay=10, attempts=10)
+    )
     max_search_iterations: int = 3
 
 

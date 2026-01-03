@@ -120,13 +120,12 @@ def get_message_evaluator(message_type:str) -> LlmAgent:
 class EscalationChecker(BaseAgent):
     """Checks research evaluation and escalates to stop the loop if grade is 'pass'."""
 
-    def __init__(self, name: str):
-        super().__init__(name=name)
+    message_type: str
 
     async def _run_async_impl(
         self, ctx: InvocationContext
     ) -> AsyncGenerator[Event, None]:
-        evaluation_result = ctx.session.state.get("message_evaluation")
+        evaluation_result = ctx.session.state.get(f"{self.message_type}_evaluation")
         if evaluation_result and evaluation_result.get("grade") == "pass":
             logging.info(
                 f"[{self.name}] Message evaluation passed. Escalating to stop loop."
@@ -141,7 +140,6 @@ class EscalationChecker(BaseAgent):
 
 def get_enhanced_message_generator(message_type:str) -> LlmAgent:
     """Creates an agent that improves messages based on evaluation feedback."""
-    # TODO : message_type 기반 다른 프롬프트 조회
     description, instruction = get_enhanced_message_generator_config(message_type=message_type)
     return LlmAgent(
         model=config.writer_model,
@@ -163,7 +161,7 @@ aspirational_dreamer_message = SequentialAgent(
             max_iterations=config.max_search_iterations,
             sub_agents=[
                 get_message_evaluator(message_type="aspirational_dreamer"),
-                EscalationChecker(name="escalation_checker"),
+                EscalationChecker(name="escalation_checker", message_type="aspirational_dreamer"),
                 get_enhanced_message_generator(message_type="aspirational_dreamer"),
             ],
         )
@@ -181,7 +179,7 @@ empathetic_supporter_message = SequentialAgent(
             max_iterations=config.max_search_iterations,
             sub_agents=[
                 get_message_evaluator(message_type="empathetic_supporter"),
-                EscalationChecker(name="escalation_checker"),
+                EscalationChecker(name="escalation_checker", message_type="empathetic_supporter"),
                 get_enhanced_message_generator(message_type="empathetic_supporter"),
             ],
         )
@@ -199,7 +197,7 @@ playful_entertainer_message = SequentialAgent(
             max_iterations=config.max_search_iterations,
             sub_agents=[
                 get_message_evaluator(message_type="playful_entertainer"),
-                EscalationChecker(name="escalation_checker"),
+                EscalationChecker(name="escalation_checker", message_type="playful_entertainer"),
                 get_enhanced_message_generator(message_type="playful_entertainer"),
             ],
         )
@@ -217,7 +215,7 @@ rational_advisor_message = SequentialAgent(
             max_iterations=config.max_search_iterations,
             sub_agents=[
                 get_message_evaluator(message_type="rational_advisor"),
-                EscalationChecker(name="escalation_checker"),
+                EscalationChecker(name="escalation_checker", message_type="rational_advisor"),
                 get_enhanced_message_generator(message_type="rational_advisor"),
             ],
         )
