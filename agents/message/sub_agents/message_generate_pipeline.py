@@ -1,6 +1,6 @@
 # parrell agent -> loop agent 기반 메시지 생성
 import logging
-from typing import Literal, Optional
+from typing import Literal, Optional, List
 from collections.abc import AsyncGenerator
 
 from google.adk.agents import BaseAgent, LlmAgent, LoopAgent, ParallelAgent, SequentialAgent
