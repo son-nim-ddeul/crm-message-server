@@ -5,5 +5,6 @@ description = "아모레 퍼시픽 AI INNOVATION CHALLENGE 2026"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "google-adk"
+    "fastapi>=0.123.10",
+    "google-adk",
 ]
