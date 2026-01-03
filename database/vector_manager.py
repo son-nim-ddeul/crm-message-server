@@ -5,8 +5,8 @@ from .embeddings import EmbeddingManager
 
 
 class VectorManager:
-    def __init__(self, embedding_manager: EmbeddingManager = None):
-        self.engine = vector_engine
+    def __init__(self, embedding_manager: EmbeddingManager = None, engine=None):
+        self.engine = engine or vector_engine
         self.embedding_manager = embedding_manager or EmbeddingManager()
         self._init_db()
 

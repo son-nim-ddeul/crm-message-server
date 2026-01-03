@@ -3,6 +3,7 @@ from datetime import datetime
 
 
 class MessageReferenceBase(BaseModel):
+    title: str
     content: str
     category: str | None = None
 
@@ -15,5 +16,5 @@ class MessageReferenceResponse(MessageReferenceBase):
     id: int
     created_at: datetime
 
-    class Config:
+    class ConfigDict:
         from_attributes = True

@@ -1,4 +1,10 @@
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from dotenv import load_dotenv
+
+# 프로젝트 루트의 .env 파일 로드
+env_path = Path(__file__).parent.parent / ".env"
+load_dotenv(dotenv_path=env_path)
 
 
 class Settings(BaseSettings):
@@ -27,7 +33,7 @@ class Settings(BaseSettings):
     cors_allow_headers: list[str] = ["*"]
 
     model_config = SettingsConfigDict(
-        env_file=".env_example",
+        env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",

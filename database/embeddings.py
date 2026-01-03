@@ -16,9 +16,6 @@ class EmbeddingManager:
         if not text:
             return []
             
-        result = self.client.models.embed_content(
-            model=self.model_name,
-            contents=text
-        )
+        result = self.client.models.embed_content(model=self.model_name, contents=text)
         return result.embeddings[0].values
 
