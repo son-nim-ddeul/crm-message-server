@@ -51,6 +51,7 @@ def test_vector_manager_insert_and_search(mock_vector_manager):
     assert "model_info" in results[0]["metadata"]
     assert results[0]["metadata"]["model_info"] == "model_a"
 
+
 def test_vector_manager_list_results(mock_vector_manager):
     vm, mock_emb = mock_vector_manager
     

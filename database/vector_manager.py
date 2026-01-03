@@ -1,6 +1,6 @@
 import json
 from sqlalchemy import text
-from src.database.session import vector_engine
+from .session import vector_engine
 from .embeddings import EmbeddingManager
 
 
