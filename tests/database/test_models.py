@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from src.database.session import Base
 
-class TestItem(Base):
+class MockItem(Base):
     __tablename__ = "test_items"
     
     id = Column(Integer, primary_key=True, index=True)

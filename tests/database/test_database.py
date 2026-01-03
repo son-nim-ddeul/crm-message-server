@@ -1,6 +1,6 @@
 import json
 from sqlalchemy import text
-from tests.database.test_models import TestItem
+from tests.database.test_models import MockItem
 
 
 def test_rds_operations(rds_session):
@@ -9,7 +9,7 @@ def test_rds_operations(rds_session):
     # 1. Create
     test_name = "테스트 아이템"
     test_description = "테스트 아이템 설명입니다."
-    item = TestItem(name=test_name, description=test_description)
+    item = MockItem(name=test_name, description=test_description)
     db.add(item)
     db.commit()
     db.refresh(item)
@@ -17,8 +17,8 @@ def test_rds_operations(rds_session):
 
     # 2. Read
     item_read = (
-        db.query(TestItem)
-        .filter(TestItem.name == test_name)
+        db.query(MockItem)
+        .filter(MockItem.name == test_name)
         .first()
     )
     assert item_read is not None
@@ -34,7 +34,7 @@ def test_rds_operations(rds_session):
     # 4. Delete
     db.delete(item_read)
     db.commit()
-    item_deleted = db.query(TestItem).filter(TestItem.name == test_name).first()
+    item_deleted = db.query(MockItem).filter(MockItem.name == test_name).first()
     assert item_deleted is None
 
 

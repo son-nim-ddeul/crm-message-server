@@ -1,5 +1,4 @@
 import sqlite_vec
-import sqlite3
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker, declarative_base
 from src.config import settings
@@ -32,8 +31,7 @@ vector_engine = create_engine(
 )
 # Load sqlite-vec extension for the vector engine
 event.listen(vector_engine, "connect", load_vec_extension)
-Vector_SessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=vector_engine)
+Vector_SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=vector_engine)
 
 
 def get_rds_db():
