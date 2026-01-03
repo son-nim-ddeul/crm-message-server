@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     rds_db_path: str = "database/rds.db"
     vector_db_path: str = "database/vector.db"
 
+    # AI Model Settings
+    google_api_key: str | None = None
+    embedding_model: str = "text-embedding-004"  # 768 dimensions
+
     cors_origins: list[str] = ["*"]
     cors_allow_credentials: bool = True
     cors_allow_methods: list[str] = ["*"]
