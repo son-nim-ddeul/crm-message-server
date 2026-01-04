@@ -101,7 +101,7 @@ async def execute_agent(
     user_id: str, 
     session_id: str, 
     runner: Runner
-) -> AsyncGenerator[str, Any, None]:
+) -> AsyncGenerator[str, None]:
     # TODO: 에이전트 new_message 수정
     execute_message = Content(
         parts=[Part(text="마케팅 메시지 생성해줘.")]
