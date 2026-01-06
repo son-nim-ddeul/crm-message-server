@@ -57,10 +57,35 @@ _ui_status_cache = {
         "before": "Enhancing message content",
         "after": "Message enhancement complete"
     },
-    # TODO: performance_estimation agent부터 이어서 계속 작성
-    "": {
-        "before": "",
-        "after": ""
+    "performance_estimation_agent": {
+        "type": False,
+        "before": "Estimating marketing performance across strategies",
+        "after": "Marketing performance estimation complete"
+    },
+    "aspirational_dreamer_estimation_agent": {
+        "type": False,
+        "before": "(Strategy : aspirational dreamer) Predicting marketing performance based on historical data",
+        "after": "(Strategy : aspirational dreamer) Performance prediction complete"
+    },
+    "empathetic_supporter_estimation_agent": {
+        "type": False,
+        "before": "(Strategy : empathetic supporter) Predicting marketing performance based on historical data",
+        "after": "(Strategy : empathetic supporter) Performance prediction complete"
+    },
+    "playful_entertainer_estimation_agent": {
+        "type": False,
+        "before": "(Strategy : playful entertainer) Predicting marketing performance based on historical data",
+        "after": "(Strategy : playful entertainer) Performance prediction complete"
+    },
+    "rational_advisor_estimation_agent": {
+        "type": False,
+        "before": "(Strategy : rational advisor) Predicting marketing performance based on historical data",
+        "after": "(Strategy : rational advisor) Performance prediction complete"
+    },
+    "report_agent": {
+        "type": False,
+        "before": "write report about marketing performance estimation",
+        "after": "write report complete"
     }
 }
 
