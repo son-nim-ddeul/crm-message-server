@@ -2,6 +2,7 @@ from google.adk.agents import SequentialAgent
 from google.adk.apps import App
 from .sub_agents.message_generate_pipeline.agent import message_generate_pipeline_agent
 from .sub_agents.performance_estimation.agent import performance_estimation_agent
+from .sub_agents.report.agent import report_agent
 from agents.config import config
 
 from google.adk.agents.callback_context import CallbackContext
@@ -39,7 +40,8 @@ root_agent = SequentialAgent(
     description="고객의 요청에 따라 마케팅 메시지를 생성한다.",
     sub_agents=[
         message_generate_pipeline_agent,
-        # performance_estimation_agent
+        performance_estimation_agent,
+        # report_agent
     ],
     before_agent_callback=set_state
 )

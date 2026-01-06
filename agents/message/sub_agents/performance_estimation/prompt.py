@@ -1,6 +1,5 @@
 # {message_type.value}_message
 # TODO: temp:{message_type.value}_previous_message 사용
-# TODO: message_sending_datetime state에서 잡아서 구체화 및 없다면 미정이라고 적어야함
 from ..types import MessageType
 
 estimation_instruction_template = """

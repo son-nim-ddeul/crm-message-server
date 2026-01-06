@@ -151,10 +151,12 @@ async def execute_agent(
                 yield json_dumps(response)
                 
             # Stream 종료 yield
+            # TODO: content
             complete_response = schemas.EventResponse(
                 event_status=EventStatus.COMPLETE,
                 user_id=user_id,
                 session_id=session_id,
+                content=None,
                 timestamp=datetime.now().timestamp()
             )
             yield json_dumps(complete_response)
