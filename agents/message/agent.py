@@ -3,7 +3,8 @@ from google.adk.apps import App
 from .sub_agents.message_generate_pipeline.agent import message_generate_pipeline_agent
 from .sub_agents.performance_estimation.agent import performance_estimation_agent
 from .sub_agents.report.agent import report_agent
-from agents.config import config
+
+from .plugins.status_logging import StautsLoggingPlugin
 
 from google.adk.agents.callback_context import CallbackContext
 from google.genai import types
@@ -36,7 +37,7 @@ def set_state(callback_context: CallbackContext) -> Optional[types.Content]:
 # TODO 1. Sequential Agent 로 수정
 # TODO 2. 주요 메시지 성과, 예상 발송일 기반 RAG 조회 에이전트 추가
 root_agent = SequentialAgent(
-    name="message_generator",
+    name="main_message_generator",
     description="고객의 요청에 따라 마케팅 메시지를 생성한다.",
     sub_agents=[
         message_generate_pipeline_agent,
@@ -46,7 +47,13 @@ root_agent = SequentialAgent(
     before_agent_callback=set_state
 )
 
-app = App(root_agent=root_agent, name="message")
+app = App(
+    root_agent=root_agent, 
+    name="message",
+    plugins=[
+        StautsLoggingPlugin
+    ]
+)
 
 def get_app_name() -> str:
     return "message"
