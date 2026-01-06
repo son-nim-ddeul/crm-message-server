@@ -36,7 +36,7 @@ class VectorManager:
     def add_item(self, key: str, content: str, metadata: dict = None):
         """데이터 임베딩 후 벡터 DB에 저장"""
         embedding = self.embedding_manager.embed_text(content)
-        metadata_json = json.dumps(metadata or {})
+        metadata_json = json.dumps(metadata or {}, ensure_ascii=False)
         
         with self.engine.begin() as conn:
             # 1. 메타데이터 저장
