@@ -1,5 +1,6 @@
+from holidayskr import year_holidays
 from pydantic import BaseModel, ConfigDict
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class MessageReferenceBase(BaseModel):
@@ -64,6 +65,7 @@ class MessageAgentConfig(BaseModel):
     current_event_info: str | None = None               # 현재 이벤트 정보 (예: 신제품 출시, 이벤트 진행 중 등)
     additional_request: str | None = None               # 추가 요청 사항
 
+
     def metadata_dict(self) -> dict:
         return {
             "brand_tone": self.brand_tone,
@@ -71,11 +73,45 @@ class MessageAgentConfig(BaseModel):
             "key_marketing_achievements": self.key_marketing_achievements,
             "message_sending_datetime": self.message_sending_datetime.strftime("%Y-%m-%d %H:%M:%S") if self.message_sending_datetime else None,
             "product_info": self.product_info,
+            "holidays": self._get_holidays(),
+            "season": self._get_season(),
         }
     
     @property
     def is_sending_datetime_set(self) -> bool:
         return self.message_sending_datetime is not None
+    
+    def _get_season(self) -> str:
+        def check_season(month: int) -> str:
+            if month in {12, 1, 2}:
+                return "겨울"
+            elif month in {3, 4, 5}:
+                return "봄"
+            elif month in {6, 7, 8}:
+                return "여름"
+            elif month in {9, 10, 11}:
+                return "가을"
+            else:
+                raise ValueError(f"Invalid month: {month}")
+
+        date_formatted = self.message_sending_datetime.strftime("%Y-%m-%d")
+        season = check_season(self.message_sending_datetime.month)
+        return f"{date_formatted} {season}"
+
+
+    def _get_holidays(self) -> list[str]:
+        start_date = self.message_sending_datetime
+        end_date = self.message_sending_datetime + timedelta(days=14)
+        holidays_info = []
+
+        for year in range(start_date.year, end_date.year + 1):
+            holidays_info += [
+                f"{hol_date.strftime('%Y-%m-%d')} {hol_name}".strip()
+                for hol_date, hol_name in year_holidays(str(year))
+            ]
+
+        return holidays_info
+
 
 class MessageAgentRequest(AgentRequest):
     config: MessageAgentConfig
