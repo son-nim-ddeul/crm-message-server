@@ -43,12 +43,13 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
           SSH_PORT: "22"
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: |
           # Transfer Docker image to server
           sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P ${SSH_PORT} image.tar.gz $SSH_USER@$SSH_HOST:/tmp/
 
           # SSH into server and deploy
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p ${SSH_PORT} $SSH_USER@$SSH_HOST << 'ENDSSH'
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p ${SSH_PORT} $SSH_USER@$SSH_HOST << ENDSSH
             # Load Docker image
             docker load < /tmp/image.tar.gz
             rm /tmp/image.tar.gz
@@ -62,6 +63,7 @@ jobs:
               --name crm-message-server \
               --restart unless-stopped \
               -p 8000:8000 \
+              -e GOOGLE_API_KEY="${GOOGLE_API_KEY}" \
               crm-message-server:latest
             
             # Clean up old images
