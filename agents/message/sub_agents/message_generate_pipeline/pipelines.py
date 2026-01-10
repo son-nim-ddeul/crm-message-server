@@ -18,7 +18,7 @@ def create_tone_pipeline(message_type: MessageType, description: str) -> Sequent
             get_message_generator(message_type=message_type),
             LoopAgent(
                 name=f"{message_type.value}_evaluate",
-                description="",
+                description=description,
                 max_iterations=config.max_search_iterations,
                 sub_agents=[
                     get_message_evaluator(message_type=message_type),
