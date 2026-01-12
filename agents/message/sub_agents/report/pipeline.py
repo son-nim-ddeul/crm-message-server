@@ -1,7 +1,6 @@
 from google.adk.agents import LlmAgent
 from pydantic import BaseModel, Field
 
-from agents.global_memory_cache import set_global_memory_cache
 from ..types import MessageType
 from agents.config import config
 from .prompt import get_report_config
@@ -20,24 +19,20 @@ class ReportOutput(BaseModel):
     )
     
 
-def save_result_to_global_memory_cache(callback_context: CallbackContext):
+def save_report_data(callback_context: CallbackContext):
     agent_name = callback_context.agent_name
     message_type = MessageType.get_message_type(agent_name=agent_name)
     
     generated_message = callback_context.state.get(f"{message_type.value}_message")
     report = callback_context.state.get(f"{message_type.value}_report")
 
-    set_global_memory_cache(
-        key=f"{callback_context.session.id}", 
-        value = {
-            message_type.value: {
-                "title": generated_message.get("title"),
-                "content": generated_message.get("content"),
-                "estimation": report.get("estimation"),
-                "conclusion": report.get("conclusion"),
-            }
-        }
-    )
+    callback_context.state[f"{message_type.value}_final_report"] = {
+        "title": generated_message.get("title"),
+        "content": generated_message.get("content"),
+        "estimation": report.get("estimation"),
+        "conclusion": report.get("conclusion"),
+    }
+
 
 def create_report_pipeline(message_type: MessageType, description: str) -> LlmAgent:
     return LlmAgent(
@@ -47,7 +42,7 @@ def create_report_pipeline(message_type: MessageType, description: str) -> LlmAg
         instruction=get_report_config(message_type=message_type),
         output_schema=ReportOutput,
         output_key=f"{message_type.value}_report",
-        after_agent_callback=save_result_to_global_memory_cache
+        after_agent_callback=save_report_data
     )
     
 aspirational_dreamer_report = create_report_pipeline(

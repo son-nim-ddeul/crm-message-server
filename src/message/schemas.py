@@ -69,7 +69,7 @@ class EventResponse(BaseModel):
         )
 
     @classmethod
-    def from_event(cls, event: Event, user_id: str, session_id: str) -> "EventResponse":
+    def from_event(cls, user_id: str, session_id: str, event: Event) -> "EventResponse":
         event_error = EventError(
             error_code=event.error_code,
             error_message=event.error_message
@@ -102,21 +102,9 @@ class EventResponse(BaseModel):
             timestamp=timestamp,
             error=EventError(error_code=error_code, error_message=error_message)
         )
-
-
-class FinalEventResponse(EventResponse):
-    final_report_response: dict | None = None
-
-    @classmethod
-    def from_final_event(cls, user_id: str, session_id: str) -> "FinalEventResponse":
-        from agents.global_memory_cache import get_global_memory_cache
-        return cls(
-            user_id=user_id,
-            session_id=session_id,
-            event_status=EventStatus.COMPLETE,
-            final_report_response=get_global_memory_cache(key=session_id),
-            timestamp=datetime.now().timestamp(),
-        )
+    
+    def mark_up_status(self, status: EventStatus) -> "EventResponse":
+        self.event_status = status
 
 
 class AgentRequest(BaseModel):

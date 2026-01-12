@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime
-from enum import StrEnum
 from typing import Any
 from typing import AsyncGenerator
 
@@ -9,11 +8,9 @@ from google.adk.runners import Runner
 from google.adk.apps import App
 from google.genai.types import Content, Part
 from google.adk.sessions.sqlite_session_service import SqliteSessionService
-from agents.global_memory_cache import get_global_memory_cache
 from src.config import settings
 from agents.message.agent import app as message_app
 from src.message import schemas
-from src.message.schemas import EventStatus
 
 logger = logging.getLogger(__name__)
 
@@ -89,19 +86,16 @@ async def execute_agent(user_id: str, session_id: str, runner: Runner) -> AsyncG
     # TODO: 에이전트 new_message 수정
     execute_message = Content(parts=[Part(text="마케팅 메시지 생성해줘.")])
     try:
-        # Stream 시작 yield
-        start_response = schemas.EventResponse.initiate_event_response(user_id=user_id, session_id=session_id)
-        yield start_response.model_dump_json(ensure_ascii=False)
-        
-        _runner = runner.run_async(user_id=user_id, session_id=session_id, new_message=execute_message)
-        async with Aclosing(_runner) as agen:
+        last_response = schemas.EventResponse.initiate_event_response(user_id=user_id, session_id=session_id)
+
+        async with Aclosing(runner.run_async(user_id=user_id, session_id=session_id, new_message=execute_message)) as agen:
             async for event in agen:
-                response = schemas.EventResponse.from_event(user_id=user_id, session_id=session_id, event=event)
-                yield response.model_dump_json(ensure_ascii=False)
-                
-        # Stream 종료 yield
-        complete_response = schemas.FinalEventResponse.from_final_event(user_id=user_id, session_id=session_id)
-        yield complete_response.model_dump_json(ensure_ascii=False)
+                yield last_response.model_dump_json(ensure_ascii=False)
+                last_response = schemas.EventResponse.from_event(user_id=user_id, session_id=session_id, event=event)
+
+        last_response.mark_up_status(status=schemas.EventStatus.COMPLETE)
+        yield last_response.model_dump_json(ensure_ascii=False)
+        
     except Exception as e:
         logger.exception("Error in execute_agent: %s", e)
         error_message = str(e) if str(e) else "에이전트 동작간 예외가 발생하였습니다."

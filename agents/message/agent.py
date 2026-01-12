@@ -1,5 +1,7 @@
+import json
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
 
@@ -9,6 +11,7 @@ from google.adk.apps import App
 from .sub_agents.message_generate_pipeline.agent import message_generate_pipeline_agent
 from .sub_agents.performance_estimation.agent import performance_estimation_agent
 from .sub_agents.report.agent import report_agent
+from .sub_agents.types import MessageType
 from .plugins.status_logging import StatusLoggingPlugin
 
 from google.adk.agents.callback_context import CallbackContext
@@ -45,6 +48,18 @@ def set_state(callback_context: CallbackContext) -> Optional[types.Content]:
     callback_context.state["persona"] = formatted_persona
 
     return None
+
+
+def set_output(callback_context: CallbackContext) -> types.Content:
+    output = {
+        message_type.value: callback_context.state.get(f"{message_type.value}_final_report")
+        for message_type in MessageType
+    }
+    
+    return types.Content(
+        parts=[types.Part(text=json.dumps(output, ensure_ascii=False))],
+        role="model",
+    )
    
 root_agent = SequentialAgent(
     name="main_message_generator",
@@ -54,7 +69,8 @@ root_agent = SequentialAgent(
         performance_estimation_agent,
         report_agent
     ],
-    before_agent_callback=set_state
+    before_agent_callback=set_state,
+    after_agent_callback=set_output
 )
 
 app = App(
